@@ -13,23 +13,26 @@ int main(int narg, char* argv[]){
         char *source, *dest;
         int arguments = 3;
 
-        //overwrite = argv[1];
-        
         if(strcmp(argv[1],"-i")==0){ 
             arguments = 4;
-            source = argv[2];
+            source = realpath(argv[2],NULL);
             dest = argv[3];
         }else{
-            source = argv[1];
+            source = realpath(argv[1],NULL);
             dest = argv[2];
         }
-        
-        if(narg==arguments){
-            if(check(arguments,source, dest)==1){
-                copy_file(source,dest);
-            }    
+        //printf("%s\n\n",source);
+        //printf("%s\n\n",dest);
+        if(strcmp(source,dest)!=0){
+            if(narg==arguments){
+                if(check(arguments,source, dest)==1){
+                    copy_file(source,dest);
+                }    
+            }else{
+                printf("Must input only source and destination file\n");
+            }
         }else{
-            printf("Must input only source and destination file\n\n");
+            printf("Source and Destination files are the same\n");
         }
     }else{
         printf("To few arguments input\n");
@@ -89,7 +92,7 @@ void copy_file(char *source, char *dest){//Copies the file from the source to th
                 size_write = 0;
             }
         }
-        printf("File copy was succesful\n\n");
+        printf("File copy was succesful\n");
     }else{
         printf("Error opening files");
     }
