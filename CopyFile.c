@@ -15,14 +15,21 @@ int main(int narg, char* argv[]){
 
         if(strcmp(argv[1],"-i")==0){ 
             arguments = 4;
-            source = realpath(argv[2],NULL);
+            source = argv[2];
             dest = argv[3];
         }else{
-            source = realpath(argv[1],NULL);
+            source = argv[1];
             dest = argv[2];
         }
-        //printf("%s\n\n",source);
-        //printf("%s\n\n",dest);
+
+        if(realpath(dest,NULL)!=NULL)
+            dest = realpath(dest,NULL);
+
+        if(realpath(source,NULL)!=NULL)
+            source = realpath(source,NULL);    
+            
+        printf("%s\n\n",source);
+        printf("%s\n\n",dest);
         if(strcmp(source,dest)!=0){
             if(narg==arguments){
                 if(check(arguments,source, dest)==1){
