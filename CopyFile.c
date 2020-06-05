@@ -5,6 +5,9 @@
 #include <ctype.h>
 #include <limits.h>
 
+#include <dirent.h>
+
+
 int check(int arguments,char *source, char *dest);
 void copy_file(char *source, char *dest);
 
@@ -28,8 +31,8 @@ int main(int narg, char* argv[]){
         if(realpath(source,NULL)!=NULL)
             source = realpath(source,NULL);    
             
-        printf("%s\n\n",source);
-        printf("%s\n\n",dest);
+        //printf("%s\n\n",source);
+        //printf("%s\n\n",dest);
         if(strcmp(source,dest)!=0){
             if(narg==arguments){
                 if(check(arguments,source, dest)==1){
@@ -51,25 +54,40 @@ int check(int arguments, char *source, char *dest){//Checks whether the file sho
     if(access(source,F_OK)!=0){
         printf("Source File does not exists. Copy aborted\n");
         exit(0);
-    } 
+    }
+    DIR* directSource = opendir(source);
+    if(directSource!=NULL){
+        printf("The source path is a Directory. Copy aborted\n");
+        exit(0);
+    }
+    if(access(source,R_OK)!=0){
+        printf("The Source File cannot be oppened. You don't have access to it. Copy Aborted\n");
+        exit(0);
+    }
+        
     if(arguments==4){
         if(access(dest,F_OK)==0){
             printf("The destination File already exists. Would you like to overwrite? (Y/N) ");
-            fflush(stdin);
-            scanf(" %c", &choise);
-            choise = toupper(choise);
-            while(choise!='Y' && choise!='N'){
-            
-            printf("Answer with Y or N ");
-            
-            fflush(stdin);
-            scanf(" %c", &choise);
-            choise = toupper(choise);
-            }
-            if(choise=='N'){
-                printf("Copy aborted\n");
+                fflush(stdin);
+                scanf(" %c", &choise);
+                choise = toupper(choise);
+                while(choise!='Y' && choise!='N'){
+                
+                printf("Answer with Y or N ");
+                
+                fflush(stdin);
+                scanf(" %c", &choise);
+                choise = toupper(choise);
+                }
+                if(choise=='N'){
+                    printf("Copy aborted\n");
+                    exit(0);
+                }
+            if(access(dest,W_OK)!=0 && choise=='Y'){
+                printf("The Destination File cannot be overwriten. You don't have access to it. Copy Aborted\n");
                 exit(0);
             }
+           
         }
     }else{
         if(access(dest,F_OK)==0){
